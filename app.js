@@ -3,8 +3,38 @@ Parties = new Mongo.Collection("parties");
 if (Meteor.isClient){
    angular.module('socially',['angular-meteor','ui.router']);  
     
-    angular.module('socially').controller('PartiesListCtrl',['$scope','$meteor',function($scope,$meteor){
-        $scope.parties = $meteor.collection(Parties);  
+   angular.module('socially').config(['$urlRouterProvider','$stateProvider''$locationProvider',function($urlRouteProvider,$stateProvider,$locationProvider){
+   
+                                      $locationProvider.html5Mode(true); 
+                                      
+                                      $stateProvider
+                                      .state('parties',{
+                                      .url:'/parties',
+                                      templateUrl: 'parties-list.ng.html', 
+                                      controller: 'PartyDetailsCtrl'
+                                      });  
+                                      
+                                      .state('partyDetails',{
+                                      .url:'/parties/:partyId', 
+                                      templateUrl: 'party-details.ng.html', 
+                                      controller:'PartyDetailsCtrl'
+                                      }); 
+                                      
+                                      $urlRouterPrvider.otherwise("/parties");
+                                      
+                                      
+                                      
+   }]);                
+    
+    
+    
+    
+    
+    
+angular.module('socially').controller('PartiesListCtrl',['$scope','$meteor',
+    function($scope,$meteor){
+        
+      $scope.parties = $meteor.collection(Parties);  
         
 $scope.remove= function(party){       
     $scope.parties.remove(party);
@@ -12,7 +42,15 @@ $scope.remove= function(party){
 $scope.removeAll= function(){
     $scope.parties.remove();
 };
+    }]); 
+    
+angular.module("socially").controller("PartyDetailsCtrl", ['$scope', '$stateParams',
+    function($scope, $stateParams){
+ 
+      $scope.partyId = $stateParams.partyId;
+ 
     }]);
+}    
     
 } 
 
